@@ -2,7 +2,6 @@ const userModel = require("../Models/userModel");
 const BookModel = require("../Models/bookModel");
 const jwt = require("jsonwebtoken")
 const { isValidPassword, isValidEmail, isValidName, isValidPhone } = require('../Validators/validatte');
-const { set } = require("mongoose");
 
 
 const createUser = async (req, res) => {
@@ -95,7 +94,10 @@ const userLogin = async (req, res) => {
         let isUserExist = await userModel.findOne({email:email, password: password })
         if (!isUserExist) return res.status(400).send({ status: false, message: "please enter valid credentials" })
 
-        let token = jwt.sign({ userId: isUserExist._id , exp: 300 }, "project4");
+        let token = jwt.sign({ userId: isUserExist._id , exp:(Date.now() / 1000) + 60}, "project4");
+        const date = new Date();
+        console.log(`Token Generated at:- ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
+ 
         res.setHeader("x-api-key", token);
         res.status(200).send({ status: true, message: token })
     }

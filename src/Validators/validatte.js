@@ -28,7 +28,11 @@ const isValidExcerpt = function(excerpt){
     return regexExept.test(excerpt)
 }
 
+const isValidTitle = function(title){
+   const regexname =  /^([a-z  A-Z 0-9]){2,30}$/;
+   return regexname.test(title)
+}
 
 
 
-module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone,isValidExcerpt}
+module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone,isValidExcerpt,isValidTitle}
