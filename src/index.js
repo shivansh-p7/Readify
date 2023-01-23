@@ -1,0 +1,17 @@
+const express=require('express')
+const app=express()
+const route=require('./routes/route.js')
+const mongoose=require('mongoose')
+
+app.use(express.json())
+mongoose.set('strictQuery',true)
+mongoose.connect('mongodb+srv://shivanshsharma:76Xjx6fMmlcP51HZ@shivansh-p7.zwfahec.mongodb.net/group3Database',{
+    useNewUrlParser:true
+})
+.then(()=>console.log('MongoDb connected'))
+.catch(err=>console.log(err))
+
+app.use('/',route)
+app.listen(process.env.PORT || 3000,function(){
+    console.log(`Server is running on ${process.env.PORT || 3000}`)
+})
