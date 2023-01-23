@@ -1,5 +1,6 @@
 const express=require('express')
 const {createUser,userLogin}=require('../controllers/userController')
+const {createBook,getBook} = require('../controllers/bookController')
 const {authentication}=require('../middlewares/middleware')
 const router=express.Router()
 
@@ -11,6 +12,8 @@ router.get('/test',function(req,res){
 router.post('/register',authentication,createUser)
 
 router.post('/login',authentication, userLogin)
+
+router.post('/books',createBook)
 
 
 router.all('/*',function(req,res){
