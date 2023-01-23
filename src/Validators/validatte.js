@@ -22,7 +22,13 @@ const isValidPhone=function (phone){
     return  mobileRegex.test(phone);
 }
 
+const isValidExcerpt = function(excerpt){
+    excerpt = excerpt.trim()
+    const regexExept=  /^([a-z  A-Z]){2,60}$/;
+    return regexExept.test(excerpt)
+}
 
 
 
-module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone}
+
+module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone,isValidExcerpt}
