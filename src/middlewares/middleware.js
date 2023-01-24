@@ -1,6 +1,7 @@
 const userModel = require("../Models/userModel");
 const BookModel = require("../Models/bookModel");
 const jwt = require("jsonwebtoken");
+const bookModel = require("../Models/bookModel");
 
 const authentication = async (req, res, next) => {
 
@@ -9,7 +10,7 @@ const authentication = async (req, res, next) => {
         if (token == undefined) {
             return res.status(401).send({ status: false, msg: "autentication token missing" })
         }
-        let decodedToken = jwt.verify(token, "project4", function (err, decoded) {
+         jwt.verify(token, "project4", function (err, decodedToken) {
             if (err) {
                 return res.status(400).send({ status: false, msg: err.message })
             } else {

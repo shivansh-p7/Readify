@@ -14,26 +14,36 @@ const createUser = async (req, res) => {
         const validateTitle = ["Mr", "Mrs", "Miss"]
         if (!validateTitle.includes(title)) return res.status(400).send({ status: false, message: `Title can only contain ${validateTitle}` })
 
-        if (!name || name.trim() == "") return res.status(400).send({ status: false, message: "name is required" })
-        if (!isValidName(name)) return res.status(400).send({ status: false, message: "Please enter valid name" })
+        if(name!=undefined &&(typeof(name)!="string")){
+            return res.status(400).send({ status: false, message: "plese enter valid name" })
+        }
+        if (!name || name.trim()=="")  return res.status(400).send({ status: false, message: "name is required" })
+       
+        if (!isValidName(name.trim())) return res.status(400).send({ status: false, message: "Please enter valid name" })
 
-        if (!phone || phone.trim() == "")  return res.status(400).send({ status: false, message: "Please enter phone number " })
-        if (!isValidPhone(phone)) return res.status(400).send({ status: false, message: "Please enter valid phone number" })
+        if(phone!=undefined &&(typeof(phone)!="string")){
+            return res.status(400).send({ status: false, message: "plese enter valid name" })
+        }
+
+        if (!phone ||(typeof(phone)=="string" && phone.trim()==""))  return res.status(400).send({ status: false, message: "Please enter phone number " })
+        if (!isValidPhone(phone.trim())) return res.status(400).send({ status: false, message: "Please enter valid phone number" })
         let isPhoneExist = await userModel.findOne({ phone: phone })
         if (isPhoneExist) return res.status(400).send({ status: false, message: "phone number already exist " })
 
-        if (!email || email.trim() == "") return res.status(400).send({ status: false, message: "Please provide email" })
-        if (!isValidEmail(email)) return res.status(400).send({ status: false, message: "Please provide valid email" })
+        if (!email || (typeof(email)=="string" && email.trim()=="")) return res.status(400).send({ status: false, message: "Please provide email" })
+        if (!isValidEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
         let isEmailExist = await userModel.findOne({ email: email })
         if (isEmailExist) return res.status(400).send({ status: false, message: "email already exist " })
 
-        if (!password || password.trim() == "") return res.status(400).send({ status: false, message: "please enter password" })
-        if (!isValidPassword(password)) return res.status(400).send({ status: false, message: "Password should contain Uppercase,Lowercase,Numbers,Special Characters,Minimum length should be 8 and maximun should be 15" })
-
-        let { street, city, pincode } = address
-        if (typeof (street) != "string") return res.status(400).send({ status: false, message: "please enter valid street name" })
-        if (typeof (city) != "string")  return res.status(400).send({ status: false, message: "please enter valid city" })
-        if (typeof (pincode) != "string") return res.status(400).send({ status: false, message: "please enter valid pincode" })
+        if (!password ||(typeof(password)=="string" && password.trim()=="")) return res.status(400).send({ status: false, message: "please enter password" })
+        if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Password should contain Uppercase,Lowercase,Numbers,Special Characters,Minimum length should be 8 and maximun should be 15" })
+if(address){ 
+    
+    let { street, city, pincode } = address
+        if (typeof (street) != "string" && street.trim()=="" ) return res.status(400).send({ status: false, message: "please enter valid street name" })
+        if (typeof (city) != "string" && city.trim()=="")  return res.status(400).send({ status: false, message: "please enter valid city" })
+        if (typeof (pincode) != "string" && pincode.trim()=="") return res.status(400).send({ status: false, message: "please enter valid pincode" })
+    }
 
         let userDetails = await userModel.create(userData)
         res.status(201).send({ status: true, message: "success", data: userDetails })
@@ -57,7 +67,7 @@ const userLogin = async (req, res) => {
         let isUserExist = await userModel.findOne({email:email, password: password })
         if (!isUserExist) return res.status(400).send({ status: false, message: "please enter valid credentials" })
 
-        let token = jwt.sign({ userId: isUserExist._id , exp:(Math.floor(Date.now() / 1000)) + 60}, "project4");
+        let token = jwt.sign({ userId: isUserExist._id , exp:(Math.floor(Date.now() / 1000)) + 84600}, "project4");
         console.log("date",Date.now())
         const date = new Date();
         console.log(`Token Generated at:- ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
