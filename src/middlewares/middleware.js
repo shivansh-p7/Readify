@@ -1,21 +1,35 @@
 const userModel = require("../Models/userModel");
 const BookModel = require("../Models/bookModel");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
 const authentication = async (req, res, next) => {
+
     try {
         let token = req.headers["x-api-key"]
-        if (!token) return res.status(400).send({ status: true, message: "Token is required" });
-        try {
-            let decodedToken = jwt.verify(token, "project4");
-            let time = Date.now()
-            let exp = decodedToken.exp
-            console.log(exp)
-            next()
+        if (token == undefined) {
+            return res.status(401).send({ status: false, msg: "autentication token missing" })
         }
-        catch (error) { if (!decodedToken) return res.status(400).send({ status: false, message: "token is not valid" }) }
+        let decodedToken = jwt.verify(token, "project4", function (err, decoded) {
+            if (err) {
+                return res.status(400).send({ status: false, msg: err.message })
+            } else {
+                req.userId = decodedToken.userId;
+                return next()
+            }
+        })
     }
     catch (error) { return res.status(500).send({ status: false, error: error.message }) }
 }
 
-module.exports={authentication}
+const authorization = async (req, res, next) => {
+
+    try {
+        let userId = req.userId;
+        let data = req.body;
+        if (userId != data.userId) return res.status(403).send({ status: false, message: "Unauthorized" });
+        next()
+    }
+    catch (error) { return res.status(500).send({ status: false, error: error.message }) }
+}
+
+module.exports = { authentication, authorization }
