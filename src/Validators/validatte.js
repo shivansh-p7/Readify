@@ -1,3 +1,5 @@
+const { eventNames } = require("../Models/reviewModel");
+
 const isValidName = function(name){
     const regexname =  /^([a-z  A-Z]){2,30}$/;
     return regexname.test(name)
@@ -24,10 +26,20 @@ const isValidExcerpt = function(excerpt){
 }
 
 const isValidTitle = function(title){
-   const regexname =  /^([a-z  A-Z 0-9]){2,30}$/;
+    
+   const regexname = /^([a-z  A-Z 0-9]){2,30}$/;
    return regexname.test(title)
 }
+const isValidReview = function(review){
+    const regexname =  /^([a-z  A-Z 0-9 . ,]){2,100}$/;
+    return regexname.test(review)
+ }
+ const isValidISBN = function(ISBN){
+    
+    if (typeof ISBN != "string")return false;
+    let regexForIsbn=/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/
+    return regexForIsbn.test(ISBN)
+ }
 
 
-
-module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone,isValidExcerpt,isValidTitle}
+module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone,isValidExcerpt,isValidTitle,isValidReview,isValidISBN}
