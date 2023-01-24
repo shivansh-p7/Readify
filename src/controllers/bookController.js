@@ -4,8 +4,6 @@ const mongoose = require('mongoose')
 const moment = require("moment")
 const isValidISBN = require("isbn-validate")
 const { isValidExcerpt, isValidTitle } = require('../Validators/validatte');
-const { response } = require("express");
-
 
 const createBook = async (req, res) => {
     try {
@@ -43,41 +41,32 @@ const createBook = async (req, res) => {
     catch (err) {
         return res.status(500).send({ status: false, Error: err.message })
     }
-
 }
 
+
 const getBooks = async (req, res) => {
-    try {
-        let query = req.query;
-        if (Object.keys(query).length == 0) {
-            let booksData = await bookModel.find({ isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, })
-            if (booksData.length == 0) return res.status(404).send({ status: false, message: "data not found" })
-            booksData = booksData.sort(booksData.title)
-            return res.status(200).send({ status: true, data: booksData })
-
-        } else {
-            const possbileQuries = ["userId", "category", "subcategory"]
-            const queries = Object.keys(query)
-            let count = 0
-            for (let i = 0; i < queries.length; i++) {
-                if (!possbileQuries.includes(queries[i])) count++
-
-            }
-            if (count > 0) return res.status(400).send({ status: false, message: "queries can only have userId,category and subcategory" })
-
-            if (queries.includes("userId") || queries.includes("category") || queries.includes("subcategory")) {
-                let booksDataByQuery = await bookModel.find({ ...query, isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, })
-                if (booksDataByQuery.length == 0) return res.status(404).send({ status: false, message: "data not found" })
-                booksDataByQuery = booksDataByQuery.sort(booksDataByQuery.title)
-                return res.status(200).send({ status: true, data: booksDataByQuery })
-            }
-
-        }
+    let data = req.query;
+    if (Object.keys(data).length == 0) {
+        let foundData = await bookModel.find({ isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1 })
+        if (foundData.length == 0) return res.status(404).send({ status: false, message: "No data available" })
+        foundData = foundData.sort((a,b)=>(a.title).localeCompare(b.title))
+        return res.status(200).send({ status: true, message: foundData })
     }
-    catch (error) {
-        return res.status(500).send({ status: false, error: error.message });
-
+    
+    if(data.userId) { if(!mongoose.isValidObjectId(data.userId)) return res.status(400).send({ status: false, message: "Invalid userID" })}
+    let expectedQueries = ["category", "subcategory", "userId"]
+    let queries = Object.keys(data);
+    let count = 0; 
+    for (let i = 0; i < queries.length; i++) {
+        if (!expectedQueries.includes(queries[i])) count++;
     }
+    if (count > 0) return res.status(400).send({ status: false, message: "queries can only have userId,category and subcategory" })
+
+    let foundData = await bookModel.find({ ...data, isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1 })
+    if (foundData.length == 0) return res.status(404).send({ status: false, message: "No data found with given parameters" })
+    foundData = foundData.sort((a,b)=>(a.title).localeCompare(b.title))
+    return res.status(200).send({ status: true, message: foundData })
+
 }
 
 module.exports = { createBook, getBooks }
