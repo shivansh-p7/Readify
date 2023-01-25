@@ -6,8 +6,13 @@ const isValidName = function(name){
 }
 
 const isValidEmail = function(email) {
-    const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[com]+)*$/;
-    return emailRegex.test(email);
+    email=email.split("@")
+    let regex=/^([a-zA-Z0-9.]){2,30}$/
+    if(regex.test(email[0])) return true
+    
+    else return false
+  
+    
 };
 
 const isValidPassword = function (password) {

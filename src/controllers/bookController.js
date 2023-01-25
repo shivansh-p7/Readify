@@ -4,35 +4,17 @@ const reviewModel = require("../Models/reviewModel");
 const mongoose = require("mongoose");
 const moment = require("moment");
 
-const {
-  isValidExcerpt,
-  isValidTitle,
-  isValidISBN,
-} = require("../Validators/validatte");
+const {isValidExcerpt,isValidTitle,isValidISBN,} = require("../Validators/validatte");
 
 const createBook = async (req, res) => {
   try {
     let bookData = req.body;
-    if (Object.keys(bookData).length == 0)
-      return res
-        .status(400)
-        .send({ status: false, message: "Please put book data" });
+    if (Object.keys(bookData).length == 0) return res.status(400).send({ status: false, message: "Please put book data" });
 
-    let {
-      title,
-      excerpt,
-      userId,
-      ISBN,
-      category,
-      subcategory,
-      reviews,
-      releasedAt,
-    } = bookData;
+    let { title, excerpt,userId,ISBN,category,subcategory,reviews,releasedAt,} = bookData;
 
     if (title != undefined && typeof title != "string") {
-      return res
-        .status(400)
-        .send({ status: false, message: "plese enter valid title" });
+      return res.status(400).send({ status: false, message: "plese enter valid title" });
     }
     if (!title || title.trim() == "")
       return res

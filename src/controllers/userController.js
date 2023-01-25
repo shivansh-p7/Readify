@@ -1,6 +1,7 @@
 const userModel = require("../Models/userModel");
 const BookModel = require("../Models/bookModel");
 const jwt = require("jsonwebtoken")
+const validator = require('validator');
 const { isValidPassword, isValidEmail, isValidName, isValidPhone } = require('../Validators/validatte');
 
 
@@ -30,11 +31,13 @@ const createUser = async (req, res) => {
         let isPhoneExist = await userModel.findOne({ phone: phone })
         if (isPhoneExist) return res.status(400).send({ status: false, message: "phone number already exist " })
 
-        if(email!=undefined &&(typeof(email)!="string")){
+        if(email!=undefined && (typeof(email)!="string")){
             return res.status(400).send({ status: false, message: "plese enter valid email" })
         }
+     
         if (!email || email.trim()=="") return res.status(400).send({ status: false, message: "Please provide email" })
-        if (!isValidEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
+        if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
+        if (isValidEmail(email.trim())==false) return res.status(400).send({ status: false, message: "Please provide valid email" })
         let isEmailExist = await userModel.findOne({ email: email })
         if (isEmailExist) return res.status(400).send({ status: false, message: "email already exist " })
 
@@ -71,12 +74,15 @@ const userLogin = async (req, res) => {
         if (Object.keys(userData).length > 2) return res.status(400).send({ status: false, message: "enter only Email and Password" })
         let { email, password } = userData;
 
-        if (!email || email.trim() == "") return res.status(400).send({ status: false, message: "please enter email" })
+        if (!email || (typeof(email)=="string" && email.trim()=="")) return res.status(400).send({ status: false, message: "Please provide email" })
+        if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
+        if (isValidEmail(email.trim())==false) return res.status(400).send({ status: false, message: "Please provide valid email" })
 
-        if (!password || password.trim() == "") return res.status(400).send({ status: false, message: "please enter password" })
+        if (!password ||(typeof(password)=="string" && password.trim()=="")) return res.status(400).send({ status: false, message: "please enter password" })
+        if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Please provide valid password" })
         
         let isUserExist = await userModel.findOne({email:email, password: password })
-        if (!isUserExist) return res.status(400).send({ status: false, message: "please enter valid credentials" })
+        if (!isUserExist) return res.status(404).send({ status: false, message: "user Not found" })
 
         let token = jwt.sign({ userId: isUserExist._id , exp:(Math.floor(Date.now() / 1000)) + 84600}, "project4");
         console.log("date",Date.now())
@@ -85,6 +91,7 @@ const userLogin = async (req, res) => {
  
         res.setHeader("x-api-key", token);
         res.status(200).send({ status: true, message: token })
+
     }
     catch (error) { res.status(500).send({ status: false, error: error.message }) }
 }

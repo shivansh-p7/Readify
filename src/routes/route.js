@@ -1,7 +1,7 @@
 const express=require('express')
 const {createUser,userLogin}=require('../controllers/userController')
 const {createBook,getBooks,getBookById, updateBooks, deleteById} = require('../controllers/bookController')
-const {createReview}=require("../controllers/reviewController")
+const {createReview,updateReview, deleteByReviewId}=require("../controllers/reviewController")
 const {authentication, authorization}=require('../middlewares/middleware')
 const router=express.Router()
 
@@ -11,7 +11,7 @@ router.post('/login',userLogin)
 
 router.post('/books',createBook)
 
-router.get('/books', authentication,getBooks)
+router.get('/books', getBooks)
 router.get("/books/:bookId",getBookById)
 router.put("/books/:bookId",authentication,updateBooks)
 router.delete("/books/:bookId",authentication,deleteById)
@@ -20,6 +20,10 @@ router.delete("/books/:bookId",authentication,deleteById)
 
 
 router.post("/books/:bookId/review",createReview)
+router.put("/books/:bookId/review/:reviewId",updateReview)
+router.delete("/books/:bookId/review/:reviewId",deleteByReviewId)
+
+
 
 
 
