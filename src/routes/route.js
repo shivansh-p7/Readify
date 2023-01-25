@@ -20,8 +20,8 @@ router.delete("/books/:bookId",authentication,deleteById)
 
 
 router.post("/books/:bookId/review",createReview)
-router.put("/books/:bookId/review/:reviewId",updateReview)
-router.delete("/books/:bookId/review/:reviewId",deleteByReviewId)
+router.put("/books/:bookId/review/:reviewId",authentication,updateReview)
+router.delete("/books/:bookId/review/:reviewId",authentication,deleteByReviewId)
 
 
 

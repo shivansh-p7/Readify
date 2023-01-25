@@ -1,11 +1,9 @@
-
 const bookModel = require("../Models/bookModel");
 const userModel = require("../Models/userModel");
 const reviewModel = require("../Models/reviewModel");
 const mongoose = require('mongoose')
 const moment = require("moment")
 const {isValidName,isValidReview}=require("../Validators/validatte")
-
 
 const createReview= async (req,res)=>{
 try{
@@ -15,8 +13,6 @@ try{
 let {reviewedBy,rating,review,reviewedAt}=reviewData
 
 if(Object.keys(reviewData).length==0) return res.status(400).send({ status: false, message: "please enter the review details" })
-// if(!reviewedBy) return res.status(400).send({ status: false, message: "please enter the reviewer name" })
-
 if(reviewedBy){
     if(reviewedBy != undefined && typeof(reviewedBy) != "string") return res.status(400).send({ status: false, message: "type of name should be string" })
 if(!isValidName(reviewedBy) ) return res.status(400).send({ status: false, message: "please enter the valid reviewer name" })
@@ -34,18 +30,18 @@ if( review.trim()=="")  return res.status(400).send({ status: false, message: "p
 if(!isValidReview(review)) return  res.status(400).send({ status: false, message: "review should contain only letters and numbers"})
 reviewData.review=review.trim()
 }
+let isBookExist= await bookModel.findOneAndUpdate({_id:bookId,isDeleted:false},{$inc:{reviews:1}},{new:true}).lean();//1
 
-
-let isBookExist= await bookModel.findOneAndUpdate({_id:bookId,isDeleted:false},{$inc:{reviews:1}},{new:true}).lean();
 if(!isBookExist) return res.status(404).send({status:false,message:"book not found"})
 
 reviewedAt=moment().format("YYYY-MM-DD")
 reviewData.reviewedAt=reviewedAt
 reviewData.bookId=bookId
 
- await reviewModel.create(reviewData);
 
- let reviews = await reviewModel.find({ bookId: bookId });
+ await reviewModel.create(reviewData);//2
+
+ let reviews = await reviewModel.find({ bookId: bookId });//3
  let  bookWithReviews = { ...isBookExist, reviewsData: reviews };
 
 
@@ -77,6 +73,10 @@ const updateReview = async (req,res)=>{
      let queries = Object.keys(data);
      let validQueries = ["review", "rating", "reviewedBy"];
      let count = 0;
+     if(queries.length==0){
+        return res.status(400).send({ status: false, message: "please enter some data in order to update" })
+
+     }
      queries.forEach((x) => {
        if (!validQueries.includes(x)) {
          count++;
@@ -98,20 +98,19 @@ const updateReview = async (req,res)=>{
       }
 
 
-    let isBookExist= await bookModel.findOne({_id:bookId,isDeleted:false}).lean();
+  let isBookExist= await bookModel.findOne({_id:bookId,isDeleted:false});//3
     
     if(!isBookExist) return res.status(404).send({status:false, message:"No book found"});
     if(isBookExist.userId!=userId){
         return res.status(403).send({status:false, message:"unauthorized"});
     }
  
-    let isReviewExist= await reviewModel.findOne({_id:reviewId,bookId: bookId,isDeleted:false})
+    let isReviewExist= await reviewModel.findOne({_id:reviewId,bookId: bookId,isDeleted:false})//2
    if(!isReviewExist) return res.status(404).send({status:false, message:"no review found"});
 
-         await reviewModel.findOneAndUpdate({_id:reviewId},{...data});
-    
+    await reviewModel.findOneAndUpdate({_id:reviewId},{...data},{new:true});//1
     let reviews = await reviewModel.find({ bookId: bookId });
-    let  bookWithReviews = { ...isBookExist, reviewsData: reviews };
+    let  bookWithReviews = { isBookExist, reviewsData: reviews };
 
  return res.status(200).send({status:true,data:bookWithReviews})
 }
@@ -120,23 +119,6 @@ catch(error){
 
 }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -169,9 +151,9 @@ const deleteByReviewId = async function(req, res) {
         let isBookExist= await bookModel.findOneAndUpdate({_id:bookId,isDeleted:false},{$inc:{reviews:-1}});
         if (!isBookExist) return res.status(404).send({ status: false, message: "The book not found." })
 
-        // if(isBookExist.userId!=userId){
-        //     return res.status(403).send({status:false,message:"unauthorized"})
-        // }
+        if(isBookExist.userId!=userId){
+            return res.status(403).send({status:false,message:"unauthorized"})
+        }
        
         
 

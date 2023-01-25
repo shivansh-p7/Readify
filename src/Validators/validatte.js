@@ -46,5 +46,10 @@ const isValidReview = function(review){
     return regexForIsbn.test(ISBN)
  }
 
+ function checkDate(str) {     // 2022 - 11 - 29
+    var re = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/ 
+    return re.test(str);
+}
 
-module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone,isValidExcerpt,isValidTitle,isValidReview,isValidISBN}
+
+module.exports={isValidPassword,isValidEmail,isValidName,isValidPhone,isValidExcerpt,isValidTitle,isValidReview,isValidISBN,checkDate}
