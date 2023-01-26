@@ -4,7 +4,7 @@ const reviewModel = require("../Models/reviewModel");
 const mongoose = require("mongoose");
 const moment = require("moment");
 
-const {isValidExcerpt,isValidTitle,isValidISBN,} = require("../Validators/validatte");
+const {isValidExcerpt,isValidTitle,isValidISBN,checkDate} = require("../Validators/validatte");
 
 const createBook = async (req, res) => {
   try {
@@ -277,6 +277,14 @@ const updateBooks = async (req, res) => {
           status: false,
           message: `plese check your ISBN as there is already one document with same ISBN number...`,
         });
+    }
+    if(releasedAt!=undefined && !checkDate(releasedAt)){
+      return res
+      .status(400)
+      .send({
+        status: false,
+        message: `please provide valid date in order to update`,
+      });
     }
     if (title != undefined) query.title = query.title.trim();
     if (excerpt != undefined) query.excerpt = query.excerpt.trim();
