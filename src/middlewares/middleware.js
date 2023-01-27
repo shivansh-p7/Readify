@@ -10,7 +10,7 @@ const authentication = async (req, res, next) => {
         if (token == undefined) {
             return res.status(401).send({ status: false, msg: "autentication token missing" })
         }
-         jwt.verify(token, "project4", function (err, decodedToken) {
+        jwt.verify(token, "project4", function (err, decodedToken) {
             if (err) {
                 return res.status(400).send({ status: false, msg: err.message })
             } else {
