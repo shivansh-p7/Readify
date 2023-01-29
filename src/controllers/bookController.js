@@ -17,7 +17,7 @@ const createBook = async (req, res) => {
     let bookData = req.body;
     if (Object.keys(bookData).length == 0) return res.status(400).send({ status: false, message: "Please put book data" });
 
-    let { title, excerpt, userId, ISBN, category, subcategory, reviews, releasedAt, } = bookData;
+    let { title, excerpt, userId, ISBN, category, subcategory, releasedAt, } = bookData;
 
     if (title != undefined && typeof title != "string") {
       return res.status(400).send({ status: false, message: "plese enter valid title" });
@@ -42,6 +42,7 @@ const createBook = async (req, res) => {
       return res.status(400).send({ status: false, message: "Please enter book userId" });
     if (!mongoose.isValidObjectId(userId))
       return res.status(400).send({ status: false, message: "please enter valid userID" });
+   
 
     if (ISBN != undefined && typeof (ISBN) != "string") {
       return res.status(400).send({ status: false, message: "plese enter valid ISBN" });
@@ -178,7 +179,7 @@ const updateBooks = async (req, res) => {
     if (isBookExist.userId != req.userId) {
       return res.status(403).send({ status: false, message: "Unauthorized" });
     }
-    //_________________________________________________________________________________________________
+    //_______________________________________________________________________________________________________
 
     let { ...query } = req.body;
 
@@ -192,25 +193,21 @@ const updateBooks = async (req, res) => {
     });
     if (count > 0) return res.status(400).send({ status: false, message: `you can only update ${validQueries} attributes ` });
 
-    if (req.body.title != undefined && typeof req.body.title !== "string") {
+    if (title != undefined && typeof title !== "string") {
       return res.status(400).send({ status: false, message: "Please enter valid title" });
     }
 
-    if (req.body.excerpt != undefined && typeof req.body.excerpt !== "string") {
+    if (excerpt != undefined && typeof excerpt !== "string") {
       return res.status(400).send({ status: false, message: "Please enter valid excerpt" });
     }
 
-    if (req.body.ISBN != undefined && !isValidISBN(req.body.ISBN)) {
+    if (ISBN != undefined && !isValidISBN(ISBN)) {
       return res.status(400).send({ status: false, message: "Please enter valid ISBN" });
     }
-    let isTitleExist = await bookModel.findOne({
-      title: query.title,
-      isDeleted: false,
-    });
-    let isISBNExits = await bookModel.findOne({
-      ISBN: query.ISBN,
-      isDeleted: false,
-    });
+    let isTitleExist = await bookModel.findOne({title:title,isDeleted: false,});
+
+    let isISBNExits = await bookModel.findOne({ISBN: ISBN,isDeleted: false,});
+
     if (isTitleExist) {
       return res.status(400).send({ status: false, message: `please check your title as there is already one document with same title...` });
     }
@@ -220,6 +217,8 @@ const updateBooks = async (req, res) => {
     if (releasedAt != undefined && !checkDate(releasedAt)) {
       return res.status(400).send({ status: false, message: `please provide valid date in order to update`, });
     }
+
+
     if (title != undefined) query.title = query.title.trim();
     if (excerpt != undefined) query.excerpt = query.excerpt.trim();
     query.releasedAt = moment().format("YYYY-MM-DD");
