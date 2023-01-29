@@ -32,7 +32,7 @@ const createUser = async (req, res) => {
 
         if (!phone || (typeof (phone) == "string" && phone.trim() == "")) return res.status(400).send({ status: false, message: "Please enter phone number " })
         if (!isValidPhone(phone.trim())) return res.status(400).send({ status: false, message: "Please enter valid phone number" })
-        let isPhoneExist = await userModel.findOne({ phone: phone })
+        let isPhoneExist = await userModel.findOne({ phone: phone.trim() })
         if (isPhoneExist) return res.status(400).send({ status: false, message: "phone number already exist " })
 
         if (email != undefined && (typeof (email) != "string")) {
@@ -42,7 +42,7 @@ const createUser = async (req, res) => {
         if (!email || email.trim() == "") return res.status(400).send({ status: false, message: "Please provide email" })
         if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
         if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
-        let isEmailExist = await userModel.findOne({ email: email })
+        let isEmailExist = await userModel.findOne({ email: email.trim() })
         if (isEmailExist) return res.status(400).send({ status: false, message: "email already exist " })
 
         if (password != undefined && (typeof (password) != "string")) {
@@ -88,7 +88,7 @@ const userLogin = async (req, res) => {
         if (!password || (typeof (password) == "string" && password.trim() == "")) return res.status(400).send({ status: false, message: "please enter password" })
         if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Please provide valid password" })
 
-        let isUserExist = await userModel.findOne({ email: email, password: password })
+        let isUserExist = await userModel.findOne({ email: email.trim(), password: password.trim() })
         if (!isUserExist) return res.status(404).send({ status: false, message: "user Not found" })
 
         let token = jwt.sign({ userId: isUserExist._id, exp: (Math.floor(Date.now() / 1000)) + 84600 }, "project4");

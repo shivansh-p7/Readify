@@ -8,6 +8,7 @@ const isValidName = function (name) {
 const isValidEmail = function (email) {
     email = email.split("@")
     let regex = /^([a-zA-Z0-9.]){2,30}$/
+   
     if (!regex.test(email[0])) return false
 
 
@@ -24,7 +25,7 @@ const isValidPhone = function (phone) {
 }
 
 const isValidExcerpt = function (excerpt) {
-    const regexExept = /^([a-z  A-Z . ,]){2,60}$/;
+    const regexExept = /^([a-z  A-Z . , ']){2,60}$/;
     return regexExept.test(excerpt)
 }
 

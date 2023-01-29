@@ -15,9 +15,16 @@ mongoose.connect('mongodb+srv://shivanshsharma:76Xjx6fMmlcP51HZ@shivansh-p7.zwfa
 
 
 
-
-
 app.use('/', route)
+app.use((err, req, res, next) => {
+    if (err.message === "Unexpected end of JSON input") {
+      return res.status(400).send({status: false, message: "ERROR Parsing Data, Please Provide a Valid JSON",});
+    } else {
+      next()
+    }
+})
+
+
 app.listen(process.env.PORT || 3000, function () {
     console.log(`Server is running on ${process.env.PORT || 3000}`)
 })
