@@ -68,7 +68,17 @@ const createBook = async (req, res) => {
     if (!subcategory || subcategory.trim() == "")
       return res.status(400).send({ status: false, message: "Please enter book subcategory" });
 
-    releasedAt = moment().format("YYYY-MM-DD");
+
+      if(releasedAt){
+        if(!checkDate(releasedAt)){
+          return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
+          bookData.releasedAt = releasedAt;
+        }else{
+          releasedAt = moment().format("YYYY-MM-DD")
+          bookData.releasedAt = releasedAt
+        
+      }
+    }
     bookData.releasedAt = releasedAt;
     bookData.title = title.trim();
     bookData.excerpt = excerpt.trim();
@@ -158,6 +168,7 @@ const getBookById = async function (req, res) {
 
 const updateBooks = async (req, res) => {
   try {
+    
     if (Object.keys(req.body).length == 0)
       return res.status(400).send({ status: false, message: "Please provide some data to update" });
     let bookId = req.params.bookId;
@@ -181,8 +192,8 @@ const updateBooks = async (req, res) => {
     }
     //_______________________________________________________________________________________________________
 
+ 
     let { ...query } = req.body;
-
     let { title, excerpt, ISBN, releasedAt } = req.body;
     let queries = Object.keys(query);
     let validQueries = ["title", "excerpt", "releasedAt", "ISBN"];

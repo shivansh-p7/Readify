@@ -52,11 +52,12 @@ const createUser = async (req, res) => {
         if (!password || password.trim() == "") return res.status(400).send({ status: false, message: "please enter password" })
         if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Password should contain Uppercase,Lowercase,Numbers,Special Characters,Minimum length should be 8 and maximun should be 15" })
         if (address) {
+             if(typeof(address)!="object") return res.status(400).send({ status: false, message: "address should be an object" })
 
             let { street, city, pincode } = address
-            if (typeof (street) != "string" && street.trim() == "") return res.status(400).send({ status: false, message: "please enter valid street name" })
-            if (typeof (city) != "string" && city.trim() == "") return res.status(400).send({ status: false, message: "please enter valid city" })
-            if (typeof (pincode) != "string" && pincode.trim() == "") return res.status(400).send({ status: false, message: "please enter valid pincode" })
+            if (street != undefined &&  typeof (street) != "string" && street.trim() == "") return res.status(400).send({ status: false, message: "please enter valid street name" })
+            if (city != undefined && typeof (city) != "string" && city.trim() == "") return res.status(400).send({ status: false, message: "please enter valid city" })
+            if (pincode != undefined &&  typeof (pincode) != "string"&&validator.isNumeric(pincode) && pincode.trim() == "") return res.status(400).send({ status: false, message: "please enter valid pincode" })
         }
         userData.name = name.trim()
         userData.title = title.trim()

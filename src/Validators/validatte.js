@@ -31,7 +31,7 @@ const isValidExcerpt = function (excerpt) {
 
 const isValidTitle = function (title) {
 
-    const regexname = /^([a-z  A-Z 0-9]){2,30}$/;
+    const regexname = /^([a-z  A-Z 0-9 . ? ! @ $ % & , ~]){2,30}$/;
     return regexname.test(title)
 }
 const isValidReview = function (review) {
