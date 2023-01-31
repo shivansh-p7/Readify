@@ -68,7 +68,17 @@ const createBook = async (req, res) => {
     if (!subcategory || subcategory.trim() == "")
       return res.status(400).send({ status: false, message: "Please enter book subcategory" });
 
-    releasedAt = moment().format("YYYY-MM-DD");
+
+      if(releasedAt){
+        if(!checkDate(releasedAt)){
+          return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
+          bookData.releasedAt = releasedAt;
+        }else{
+          releasedAt = moment().format("YYYY-MM-DD")
+          bookData.releasedAt = releasedAt
+        
+      }
+    }
     bookData.releasedAt = releasedAt;
     bookData.title = title.trim();
     bookData.excerpt = excerpt.trim();

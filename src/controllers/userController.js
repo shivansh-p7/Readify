@@ -57,7 +57,7 @@ const createUser = async (req, res) => {
             let { street, city, pincode } = address
             if (street != undefined &&  typeof (street) != "string" && street.trim() == "") return res.status(400).send({ status: false, message: "please enter valid street name" })
             if (city != undefined && typeof (city) != "string" && city.trim() == "") return res.status(400).send({ status: false, message: "please enter valid city" })
-            if (pincode != undefined && typeof (pincode) != "string" && pincode.trim() == "") return res.status(400).send({ status: false, message: "please enter valid pincode" })
+            if (pincode != undefined &&  typeof (pincode) != "string"&&validator.isNumeric(pincode) && pincode.trim() == "") return res.status(400).send({ status: false, message: "please enter valid pincode" })
         }
         userData.name = name.trim()
         userData.title = title.trim()
