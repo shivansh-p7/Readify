@@ -25,7 +25,7 @@ const createReview = async (req, res) => {
       reviewData.reviewedBy = reviewedBy.trim()
     }
 
-    if (!rating) res.status(400).send({ status: false, message: "please give rating" })
+    if (!rating ) return res.status(400).send({ status: false, message: "please give rating" })
     if (typeof rating !== 'number' || !/^[1-5]{1}$/.test(rating)) {
       return res.status(400).send({ status: false, message: "rating should be integers between [1,5] " })
     }

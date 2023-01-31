@@ -158,6 +158,7 @@ const getBookById = async function (req, res) {
 
 const updateBooks = async (req, res) => {
   try {
+    
     if (Object.keys(req.body).length == 0)
       return res.status(400).send({ status: false, message: "Please provide some data to update" });
     let bookId = req.params.bookId;
@@ -181,8 +182,8 @@ const updateBooks = async (req, res) => {
     }
     //_______________________________________________________________________________________________________
 
+ 
     let { ...query } = req.body;
-
     let { title, excerpt, ISBN, releasedAt } = req.body;
     let queries = Object.keys(query);
     let validQueries = ["title", "excerpt", "releasedAt", "ISBN"];
