@@ -99,7 +99,7 @@ const createBook = async (req, res) => {
 const getBooks = async (req, res) => {
   let data = req.query;
   if (Object.keys(data).length == 0) {
-    let foundData = await bookModel.find({ isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 });
+    let foundData = await bookModel.find({ isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1,bookCover:1 });
 
     if (foundData.length == 0) return res.status(404).send({ status: false, message: "No data available" });
 
