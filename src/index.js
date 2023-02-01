@@ -2,13 +2,14 @@ const express = require('express')
 const app = express()
 const route = require('./routes/route.js')
 const mongoose = require('mongoose')
-
+const multer=require("multer")
 
 
 
 
 app.use(express.json())
-mongoose.set('strictQuery', true)
+app.use(multer().any())
+// mongoose.set('strictQuery', true)
 mongoose.connect('mongodb+srv://shivanshsharma:76Xjx6fMmlcP51HZ@shivansh-p7.zwfahec.mongodb.net/group3Database')
     .then(() => console.log('MongoDb connected'))
     .catch(err => console.log(err))

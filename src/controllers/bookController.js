@@ -71,20 +71,24 @@ const createBook = async (req, res) => {
 
       if(releasedAt){
         if(!checkDate(releasedAt)){
+          
           return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
-          bookData.releasedAt = releasedAt;
-        }else{
-          releasedAt = moment().format("YYYY-MM-DD")
-          bookData.releasedAt = releasedAt
-        
-      }
-    }
-    bookData.releasedAt = releasedAt;
+         
+        }
+        bookData.releasedAt = releasedAt
+
+    }else{
+      releasedAt = moment().format("YYYY-MM-DD")
+      bookData.releasedAt = releasedAt
+    
+  }
+  
     bookData.title = title.trim();
     bookData.excerpt = excerpt.trim();
     bookData.category = category.trim();
     bookData.subcategory = subcategory.trim();
     bookData.ISBN = ISBN.trim();
+    bookData.bookCover=req.bookLink
     let createBook = await bookModel.create(bookData);
     return res.status(201).send({ status: true, message: "Success", Data: createBook });
   } catch (err) {
