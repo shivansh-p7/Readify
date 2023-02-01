@@ -71,20 +71,24 @@ const createBook = async (req, res) => {
 
       if(releasedAt){
         if(!checkDate(releasedAt)){
+          
           return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
-          bookData.releasedAt = releasedAt;
-        }else{
-          releasedAt = moment().format("YYYY-MM-DD")
-          bookData.releasedAt = releasedAt
-        
-      }
-    }
-    bookData.releasedAt = releasedAt;
+         
+        }
+        bookData.releasedAt = releasedAt
+
+    }else{
+      releasedAt = moment().format("YYYY-MM-DD")
+      bookData.releasedAt = releasedAt
+    
+  }
+  
     bookData.title = title.trim();
     bookData.excerpt = excerpt.trim();
     bookData.category = category.trim();
     bookData.subcategory = subcategory.trim();
     bookData.ISBN = ISBN.trim();
+    bookData.bookCover=req.bookLink
     let createBook = await bookModel.create(bookData);
     return res.status(201).send({ status: true, message: "Success", Data: createBook });
   } catch (err) {
@@ -99,7 +103,7 @@ const createBook = async (req, res) => {
 const getBooks = async (req, res) => {
   let data = req.query;
   if (Object.keys(data).length == 0) {
-    let foundData = await bookModel.find({ isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 });
+    let foundData = await bookModel.find({ isDeleted: false }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1,bookCover:1 });
 
     if (foundData.length == 0) return res.status(404).send({ status: false, message: "No data available" });
 

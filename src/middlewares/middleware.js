@@ -1,7 +1,10 @@
 const userModel = require("../Models/userModel");
 const BookModel = require("../Models/bookModel");
 const jwt = require("jsonwebtoken");
+const aws= require("aws-sdk")
 const bookModel = require("../Models/bookModel");
+
+
 
 const authentication = async (req, res, next) => {
 
@@ -32,5 +35,14 @@ const authorization = async (req, res, next) => {
     }
     catch (error) { return res.status(500).send({ status: false, error: error.message }) }
 }
+
+
+
+
+
+
+
+
+
 
 module.exports = { authentication, authorization }
