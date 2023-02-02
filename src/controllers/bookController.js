@@ -22,8 +22,7 @@ const createBook = async (req, res) => {
     if (title != undefined && typeof title != "string") {
       return res.status(400).send({ status: false, message: "plese enter valid title" });
     }
-    if (!title || title.trim() == "")
-      return res.status(400).send({ status: false, message: "Please enter book title" });
+    if (!title || title.trim() == "") return res.status(400).send({ status: false, message: "Please enter book title" });
    // if (!isValidTitle(title)) return res.status(400).send({ status: false, message: "title can contain only letters and numbers" });
 
     let isTitleExits = await bookModel.findOne({ title: title.trim() });
