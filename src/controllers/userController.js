@@ -80,22 +80,22 @@ const createUser = async (req, res) => {
 const userLogin = async (req, res) => {
     try {
         let userData = req.body;
-        if (Object.keys(userData).length == 0) return res.status(400).send({ status: false, message: "please enter some data..." })
+       // if (Object.keys(userData).length == 0) return res.status(400).send({ status: false, message: "please enter some data..." })
        // if (Object.keys(userData).length > 2) return res.status(400).send({ status: false, message: "enter only Email and Password" })
         let { email, password } = userData;
 
 
 
-        if (email!=undefined && typeof (email) == "string" ) return res.status(400).send({ status: false, message: "Please provide email" })
-        if (!email || email.trim() == "") return res.status(400).send({ status: false, message: "Please provide email" })
+       // if (email!=undefined && typeof (email) == "string" ) return res.status(400).send({ status: false, message: "Please provide email" })
+        if (!email ) return res.status(400).send({ status: false, message: "Please provide email" })
        //if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
        // if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
 
-        if (password !=undefined && typeof (password) == "string" ) return res.status(400).send({ status: false, message: "please enter password" })
-        if (!password || password.trim() == "") return res.status(400).send({ status: false, message: "please enter password" })
+        //if (password !=undefined && typeof (password) == "string" ) return res.status(400).send({ status: false, message: "please enter password" })
+        if (!password ) return res.status(400).send({ status: false, message: "please enter password" })
       // if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Please provide valid password" })
 
-        let isUserExist = await userModel.findOne({ email: email.trim(), password: password.trim() })
+        let isUserExist = await userModel.findOne({ email: email, password: password})
         if (!isUserExist) return res.status(401).send({ status: false, message: "user Not found" }) //401 instead 404
 
         let token = jwt.sign({ userId: isUserExist._id, exp: (Math.floor(Date.now() / 1000)) + 84600 }, "project4");
@@ -104,10 +104,11 @@ const userLogin = async (req, res) => {
        // console.log(`Token Generated at:- ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
 
         res.setHeader("x-api-key", token);
-        res.status(200).send({ status: true, message: 'Success', data: token })
+      return  res.status(200).send({ status: true, message: 'Success', data: token })
 
     }
-    catch (error) { res.status(500).send({ status: false, error: error.message }) }
+    catch (error) { 
+        res.status(500).send({ status: false, error: error.message }) }
 }
 
 module.exports = { createUser, userLogin }

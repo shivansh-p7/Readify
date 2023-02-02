@@ -17,12 +17,12 @@ const createReview = async (req, res) => {
     if (!mongoose.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "invalid bookId" })
     let { reviewedBy, rating, review, reviewedAt } = reviewData
 
-    if (Object.keys(reviewData).length == 0) return res.status(400).send({ status: false, message: "please enter the review details" })
+   // if (Object.keys(reviewData).length == 0) return res.status(400).send({ status: false, message: "please enter the review details" })
     if (reviewedBy) {
-      if (reviewedBy != undefined && typeof (reviewedBy) != "string") return res.status(400).send({ status: false, message: "type of name should be text" })
+      //if (reviewedBy != undefined && typeof (reviewedBy) != "string") return res.status(400).send({ status: false, message: "type of name should be text" })
       if (reviewedBy.trim() == "") return res.status(400).send({ status: false, message: "please provide reviewer name" })
       //if (!isValidName(reviewedBy)) return res.status(400).send({ status: false, message: "please enter the valid reviewer name" })
-      reviewData.reviewedBy = reviewedBy.trim()
+      reviewData.reviewedBy = reviewedBy
     }
 
     if (!rating ) return res.status(400).send({ status: false, message: "please give rating" })
@@ -31,10 +31,10 @@ const createReview = async (req, res) => {
     }
 
     if (review) {
-      if (review != undefined && typeof (review) != "string") return res.status(400).send({ status: false, message: "type of name should be string" })
+    //  if (review != undefined && typeof (review) != "string") return res.status(400).send({ status: false, message: "type of name should be string" })
       if (review.trim() == "") return res.status(400).send({ status: false, message: "please provide review" })
      // if (!isValidReview(review)) return res.status(400).send({ status: false, message: "review should contain only letters and numbers" })
-      reviewData.review = review.trim()
+      reviewData.review = review
     }
     let isBookExist = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { $inc: { reviews: 1 } }, { new: true }).lean();//1
 
@@ -79,7 +79,7 @@ const updateReview = async (req, res) => {
 
 
 
-    if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "No data in body" });
+   // if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "No data in body" });
     let bookId = req.params.bookId;
     if (!mongoose.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "No valid bookId" });
 
@@ -104,15 +104,15 @@ const updateReview = async (req, res) => {
     }
 
 
-    if (review != undefined && typeof review !== "string") {
-      return res.status(400).send({ status: false, message: "Please enter valid review" });
-    }
-    if ((rating != undefined) && (typeof rating !== "number" || !/^[1-5]{1}$/.test(rating))) {
-      return res.status(400).send({ status: false, message: "Please enter valid rating" });
-    }
-    if (reviewedBy != undefined && typeof reviewedBy !== "string") {
-      return res.status(400).send({ status: false, message: "Please enter valid reviewedBy" });
-    }
+    // if (review != undefined && typeof review !== "string") {
+    //   return res.status(400).send({ status: false, message: "Please enter valid review" });
+    // }
+    // if ((rating != undefined) && (typeof rating !== "number" || !/^[1-5]{1}$/.test(rating))) {
+    //   return res.status(400).send({ status: false, message: "Please enter valid rating" });
+    // // }
+    // if (reviewedBy != undefined && typeof reviewedBy !== "string") {
+    //   return res.status(400).send({ status: false, message: "Please enter valid reviewedBy" });
+    // }
 
 
     let isBookExist = await bookModel.findOne({ _id: bookId, isDeleted: false }).lean();//3

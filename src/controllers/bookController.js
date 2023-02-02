@@ -15,55 +15,55 @@ const { isValidExcerpt, isValidTitle, isValidISBN, checkDate } = require("../Val
 const createBook = async (req, res) => {
   try {
     let bookData = req.body;
-    if (Object.keys(bookData).length == 0) return res.status(400).send({ status: false, message: "Please put book data" });
+   // if (Object.keys(bookData).length == 0) return res.status(400).send({ status: false, message: "Please put book data" });
 
     let { title, excerpt, userId, ISBN, category, subcategory, releasedAt, } = bookData;
 
-    if (title != undefined && typeof title != "string") {
-      return res.status(400).send({ status: false, message: "plese enter valid title" });
-    }
-    if (!title || title.trim() == "") return res.status(400).send({ status: false, message: "Please enter book title" });
+    // if (title != undefined && typeof title != "string") {
+    //   return res.status(400).send({ status: false, message: "plese enter valid title" });
+    // }
+    if (!title ) return res.status(400).send({ status: false, message: "Please enter book title" });
    // if (!isValidTitle(title)) return res.status(400).send({ status: false, message: "title can contain only letters and numbers" });
 
-    let isTitleExits = await bookModel.findOne({ title: title.trim() });
+    let isTitleExits = await bookModel.findOne({ title: title });
     if (isTitleExits) return res.status(400).send({ status: false, message: "Title already exits" });
 
-    if (excerpt != undefined && typeof (excerpt) != "string") {
-      return res.status(400).send({ status: false, message: "plese enter valid excerpt" });
-    }
-    if (!excerpt || excerpt.trim() == "")
+    // if (excerpt != undefined && typeof (excerpt) != "string") {
+    //   return res.status(400).send({ status: false, message: "plese enter valid excerpt" });
+    // }
+    if (!excerpt )
       return res.status(400).send({ status: false, message: "Please enter book excerpt" });
   //  if (!isValidExcerpt(excerpt)) return res.status(400).send({ status: false, message: "please provide a valid excerpt" });
 
 
 
-    if (!userId || userId == "")
+    if (!userId )
       return res.status(400).send({ status: false, message: "Please enter book userId" });
     if (!mongoose.isValidObjectId(userId))
       return res.status(400).send({ status: false, message: "please enter valid userID" });
    
 
-    if (ISBN != undefined && typeof (ISBN) != "string") {
-      return res.status(400).send({ status: false, message: "plese enter valid ISBN" });
-    }
-    if (!ISBN || ISBN.trim() == "")
+    // if (ISBN != undefined && typeof (ISBN) != "string") {
+    //   return res.status(400).send({ status: false, message: "plese enter valid ISBN" });
+    // }
+    if (!ISBN )
       return res.status(400).send({ status: false, message: "Please enter book ISBN" });
    // if (!isValidISBN(ISBN.trim())) return res.status(400).send({ status: false, message: "Please enter valid ISBN" });
 
-    let isISBNExits = await bookModel.findOne({ ISBN: ISBN.trim() });
+    let isISBNExits = await bookModel.findOne({ ISBN: ISBN });
     if (isISBNExits)
       return res.status(400).send({ status: false, message: "ISBN already exits" });
 
-    if (category != undefined && typeof (category) != "string") {
-      return res.status(400).send({ status: false, message: "plese enter valid category" });
-    }
-    if (!category || category.trim() == "")
+    // if (category != undefined && typeof (category) != "string") {
+    //   return res.status(400).send({ status: false, message: "plese enter valid category" });
+    // }
+    if (!category )
       return res.status(400).send({ status: false, message: "Please enter book category" });
 
-    if (subcategory != undefined && typeof (subcategory) != "string") {
-      return res.status(400).send({ status: false, message: "plese enter valid subcategory" });
-    }
-    if (!subcategory || subcategory.trim() == "")
+    // if (subcategory != undefined && typeof (subcategory) != "string") {
+    //   return res.status(400).send({ status: false, message: "plese enter valid subcategory" });
+    // }
+    if (!subcategory )
       return res.status(400).send({ status: false, message: "Please enter book subcategory" });
 
 
@@ -206,13 +206,13 @@ const updateBooks = async (req, res) => {
     });
     if (count > 0) return res.status(400).send({ status: false, message: `you can only update ${validQueries} attributes ` });
 
-    if (title != undefined && typeof title !== "string") {
-      return res.status(400).send({ status: false, message: "Please enter valid title" });
-    }
+    // if (title != undefined && typeof title !== "string") {
+    //   return res.status(400).send({ status: false, message: "Please enter valid title" });
+    // }
 
-    if (excerpt != undefined && typeof excerpt !== "string") {
-      return res.status(400).send({ status: false, message: "Please enter valid excerpt" });
-    }
+    // if (excerpt != undefined && typeof excerpt !== "string") {
+    //   return res.status(400).send({ status: false, message: "Please enter valid excerpt" });
+    // }
 
     // if (ISBN != undefined && !isValidISBN(ISBN)) {
     //   return res.status(400).send({ status: false, message: "Please enter valid ISBN" });
@@ -227,13 +227,13 @@ const updateBooks = async (req, res) => {
     if (isISBNExits) {
       return res.status(400).send({ status: false, message: `please check your ISBN as there is already one document with same ISBN number...` });
     }
-    if (releasedAt != undefined && !checkDate(releasedAt)) {
-      return res.status(400).send({ status: false, message: `please provide valid date in order to update`, });
-    }
+    // if (releasedAt != undefined && !checkDate(releasedAt)) {
+    //   return res.status(400).send({ status: false, message: `please provide valid date in order to update`, });
+    // }
 
 
-    if (title != undefined) query.title = query.title.trim();
-    if (excerpt != undefined) query.excerpt = query.excerpt.trim();
+    // if (title != undefined) query.title = query.title.trim();
+    // if (excerpt != undefined) query.excerpt = query.excerpt.trim();
     query.releasedAt = moment().format("YYYY-MM-DD");
     let updatedData = await bookModel.findOneAndUpdate({ _id: bookId }, query, { new: true, }).select({ __v: 0 });
     return res.status(200).send({ status: true, message: `success`, data: updatedData });
