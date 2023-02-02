@@ -24,7 +24,7 @@ const createBook = async (req, res) => {
     }
     if (!title || title.trim() == "")
       return res.status(400).send({ status: false, message: "Please enter book title" });
-    if (!isValidTitle(title)) return res.status(400).send({ status: false, message: "title can contain only letters and numbers" });
+   // if (!isValidTitle(title)) return res.status(400).send({ status: false, message: "title can contain only letters and numbers" });
 
     let isTitleExits = await bookModel.findOne({ title: title.trim() });
     if (isTitleExits) return res.status(400).send({ status: false, message: "Title already exits" });
@@ -34,7 +34,7 @@ const createBook = async (req, res) => {
     }
     if (!excerpt || excerpt.trim() == "")
       return res.status(400).send({ status: false, message: "Please enter book excerpt" });
-    if (!isValidExcerpt(excerpt)) return res.status(400).send({ status: false, message: "please provide a valid excerpt" });
+  //  if (!isValidExcerpt(excerpt)) return res.status(400).send({ status: false, message: "please provide a valid excerpt" });
 
 
 
@@ -49,8 +49,7 @@ const createBook = async (req, res) => {
     }
     if (!ISBN || ISBN.trim() == "")
       return res.status(400).send({ status: false, message: "Please enter book ISBN" });
-    if (!isValidISBN(ISBN.trim()))
-      return res.status(400).send({ status: false, message: "Please enter valid ISBN" });
+   // if (!isValidISBN(ISBN.trim())) return res.status(400).send({ status: false, message: "Please enter valid ISBN" });
 
     let isISBNExits = await bookModel.findOne({ ISBN: ISBN.trim() });
     if (isISBNExits)
@@ -70,11 +69,11 @@ const createBook = async (req, res) => {
 
 
       if(releasedAt){
-        if(!checkDate(releasedAt)){
+        // if(!checkDate(releasedAt)){
           
-          return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
+        //   return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
          
-        }
+        // }
         bookData.releasedAt = releasedAt
 
     }else{
@@ -88,7 +87,7 @@ const createBook = async (req, res) => {
     bookData.category = category.trim();
     bookData.subcategory = subcategory.trim();
     bookData.ISBN = ISBN.trim();
-    bookData.bookCover=req.bookLink
+    // bookData.bookCover=req.bookLink
     let createBook = await bookModel.create(bookData);
     return res.status(201).send({ status: true, message: "Success", Data: createBook });
   } catch (err) {
@@ -177,7 +176,7 @@ const updateBooks = async (req, res) => {
       return res.status(400).send({ status: false, message: "Please provide some data to update" });
     let bookId = req.params.bookId;
 
-    if (!bookId || bookId.trim() == "") {
+    if (!bookId ) {
       return res.status(400).send({ status: false, message: `please provide bookId in order to update..` });
     }
     if (!mongoose.isValidObjectId(bookId)) {
@@ -216,9 +215,9 @@ const updateBooks = async (req, res) => {
       return res.status(400).send({ status: false, message: "Please enter valid excerpt" });
     }
 
-    if (ISBN != undefined && !isValidISBN(ISBN)) {
-      return res.status(400).send({ status: false, message: "Please enter valid ISBN" });
-    }
+    // if (ISBN != undefined && !isValidISBN(ISBN)) {
+    //   return res.status(400).send({ status: false, message: "Please enter valid ISBN" });
+    // }
     let isTitleExist = await bookModel.findOne({title:title,isDeleted: false,});
 
     let isISBNExits = await bookModel.findOne({ISBN: ISBN,isDeleted: false,});

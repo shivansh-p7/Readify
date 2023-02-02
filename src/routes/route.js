@@ -19,9 +19,9 @@ router.post('/login', userLogin)
 
 //_______________________________________________________bookAPI'S__________________________________________
 
-router.post('/books', authentication,authorization,awsBookLink,createBook)
-router.get('/books',getBooks)
-router.get("/books/:bookId",getBookById)
+router.post('/books', authentication,authorization,createBook)
+router.get('/books',authentication,getBooks)
+router.get("/books/:bookId",authentication,getBookById)
 router.put("/books/:bookId", authentication, updateBooks)
 router.delete("/books/:bookId", authentication, deleteById)
 
