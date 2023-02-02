@@ -40,7 +40,7 @@ const createUser = async (req, res) => {
         }
 
         if (!email || email.trim() == "") return res.status(400).send({ status: false, message: "Please provide email" })
-        //if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
+        if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
         //if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
         let isEmailExist = await userModel.findOne({ email: email.trim() })
         if (isEmailExist) return res.status(400).send({ status: false, message: "email already exist " })
@@ -50,7 +50,8 @@ const createUser = async (req, res) => {
         }
 
         if (!password || password.trim() == "") return res.status(400).send({ status: false, message: "please enter password" })
-       // if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Password should contain Uppercase,Lowercase,Numbers,Special Characters,Minimum length should be 8 and maximun should be 15" })
+        
+     if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Password should contain Uppercase,Lowercase,Numbers,Special Characters,Minimum length should be 8 and maximun should be 15" })
         if (address) {
              if(typeof(address)!="object") return res.status(400).send({ status: false, message: "address should be an object" })
 
@@ -80,22 +81,26 @@ const userLogin = async (req, res) => {
     try {
         let userData = req.body;
         if (Object.keys(userData).length == 0) return res.status(400).send({ status: false, message: "please enter some data..." })
-        if (Object.keys(userData).length > 2) return res.status(400).send({ status: false, message: "enter only Email and Password" })
+       // if (Object.keys(userData).length > 2) return res.status(400).send({ status: false, message: "enter only Email and Password" })
         let { email, password } = userData;
 
-        if (!email || (typeof (email) == "string" && email.trim() == "")) return res.status(400).send({ status: false, message: "Please provide email" })
-       // if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
+
+
+        if (email!=undefined && typeof (email) == "string" ) return res.status(400).send({ status: false, message: "Please provide email" })
+        if (!email || email.trim() == "") return res.status(400).send({ status: false, message: "Please provide email" })
+       if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
        // if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
 
-        if (!password || (typeof (password) == "string" && password.trim() == "")) return res.status(400).send({ status: false, message: "please enter password" })
-       // if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Please provide valid password" })
+        if (password !=undefined && typeof (password) == "string" ) return res.status(400).send({ status: false, message: "please enter password" })
+        if (!password || password.trim() == "") return res.status(400).send({ status: false, message: "please enter password" })
+       if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Please provide valid password" })
 
         let isUserExist = await userModel.findOne({ email: email.trim(), password: password.trim() })
-        if (!isUserExist) return res.status(404).send({ status: false, message: "user Not found" })
+        if (!isUserExist) return res.status(401).send({ status: false, message: "user Not found" }) //401 instead 404
 
         let token = jwt.sign({ userId: isUserExist._id, exp: (Math.floor(Date.now() / 1000)) + 84600 }, "project4");
-        console.log("date", Date.now())
-        const date = new Date();
+        // console.log("date", Date.now())
+        // const date = new Date();
         console.log(`Token Generated at:- ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
 
         res.setHeader("x-api-key", token);
