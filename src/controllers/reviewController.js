@@ -21,7 +21,7 @@ const createReview = async (req, res) => {
     if (reviewedBy) {
       if (reviewedBy != undefined && typeof (reviewedBy) != "string") return res.status(400).send({ status: false, message: "type of name should be text" })
       if (reviewedBy.trim() == "") return res.status(400).send({ status: false, message: "please provide reviewer name" })
-      if (!isValidName(reviewedBy)) return res.status(400).send({ status: false, message: "please enter the valid reviewer name" })
+      //if (!isValidName(reviewedBy)) return res.status(400).send({ status: false, message: "please enter the valid reviewer name" })
       reviewData.reviewedBy = reviewedBy.trim()
     }
 
@@ -33,7 +33,7 @@ const createReview = async (req, res) => {
     if (review) {
       if (review != undefined && typeof (review) != "string") return res.status(400).send({ status: false, message: "type of name should be string" })
       if (review.trim() == "") return res.status(400).send({ status: false, message: "please provide review" })
-      if (!isValidReview(review)) return res.status(400).send({ status: false, message: "review should contain only letters and numbers" })
+     // if (!isValidReview(review)) return res.status(400).send({ status: false, message: "review should contain only letters and numbers" })
       reviewData.review = review.trim()
     }
     let isBookExist = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { $inc: { reviews: 1 } }, { new: true }).lean();//1
@@ -41,9 +41,9 @@ const createReview = async (req, res) => {
     if (!isBookExist) return res.status(404).send({ status: false, message: "book not found" })
 
     if(reviewedAt){
-      if(!checkDate(reviewedAt)){
-        return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
-      }
+      // if(!checkDate(reviewedAt)){
+      //   return res.status(400).send({status:false,message:"please enter valid format:YYYY-MM-DD"})
+      // }
       reviewData.reviewedAt=reviewedAt
     }else{
     reviewedAt = moment().format("YYYY-MM-DD")
@@ -127,7 +127,7 @@ const updateReview = async (req, res) => {
 
     let bookWithReviews = { ...isBookExist, reviewsData: updatedReview };
 
-    return res.status(200).send({ status: true, data: bookWithReviews })
+    return res.status(200).send({ status: true, message: 'Success', data: bookWithReviews })
   }
   catch (error) {
     return res.status(500).send({ status: false, error: error.message })

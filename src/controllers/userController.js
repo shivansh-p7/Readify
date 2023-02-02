@@ -24,14 +24,14 @@ const createUser = async (req, res) => {
         }
         if (!name || name.trim() == "") return res.status(400).send({ status: false, message: "name is required" })
 
-        if (!isValidName(name.trim())) return res.status(400).send({ status: false, message: "Please enter valid name" })
+        //if (!isValidName(name.trim())) return res.status(400).send({ status: false, message: "Please enter valid name" })
 
         if (phone != undefined && (typeof (phone) != "string")) {
             return res.status(400).send({ status: false, message: "plese enter valid phone number" })
         }
 
         if (!phone || (typeof (phone) == "string" && phone.trim() == "")) return res.status(400).send({ status: false, message: "Please enter phone number " })
-        if (!isValidPhone(phone.trim())) return res.status(400).send({ status: false, message: "Please enter valid phone number" })
+        //if (!isValidPhone(phone.trim())) return res.status(400).send({ status: false, message: "Please enter valid phone number" })
         let isPhoneExist = await userModel.findOne({ phone: phone.trim() })
         if (isPhoneExist) return res.status(400).send({ status: false, message: "phone number already exist " })
 
@@ -40,8 +40,8 @@ const createUser = async (req, res) => {
         }
 
         if (!email || email.trim() == "") return res.status(400).send({ status: false, message: "Please provide email" })
-        if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
-        if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
+        //if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
+        //if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
         let isEmailExist = await userModel.findOne({ email: email.trim() })
         if (isEmailExist) return res.status(400).send({ status: false, message: "email already exist " })
 
@@ -50,7 +50,7 @@ const createUser = async (req, res) => {
         }
 
         if (!password || password.trim() == "") return res.status(400).send({ status: false, message: "please enter password" })
-        if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Password should contain Uppercase,Lowercase,Numbers,Special Characters,Minimum length should be 8 and maximun should be 15" })
+       // if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Password should contain Uppercase,Lowercase,Numbers,Special Characters,Minimum length should be 8 and maximun should be 15" })
         if (address) {
              if(typeof(address)!="object") return res.status(400).send({ status: false, message: "address should be an object" })
 
@@ -58,6 +58,7 @@ const createUser = async (req, res) => {
             if (street != undefined &&  typeof (street) != "string" && street.trim() == "") return res.status(400).send({ status: false, message: "please enter valid street name" })
             if (city != undefined && typeof (city) != "string" && city.trim() == "") return res.status(400).send({ status: false, message: "please enter valid city" })
             if (pincode != undefined &&  typeof (pincode) != "string"&&validator.isNumeric(pincode) && pincode.trim() == "") return res.status(400).send({ status: false, message: "please enter valid pincode" })
+            //if(!/^[0-9]{6}$/.test(pincode)) return res.status(400).send({ status: false, message: "please enter valid pincode" })
         }
         userData.name = name.trim()
         userData.title = title.trim()
@@ -83,11 +84,11 @@ const userLogin = async (req, res) => {
         let { email, password } = userData;
 
         if (!email || (typeof (email) == "string" && email.trim() == "")) return res.status(400).send({ status: false, message: "Please provide email" })
-        if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
-        if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
+       // if (!validator.isEmail(email.trim())) return res.status(400).send({ status: false, message: "Please provide valid email" })
+       // if (isValidEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
 
         if (!password || (typeof (password) == "string" && password.trim() == "")) return res.status(400).send({ status: false, message: "please enter password" })
-        if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Please provide valid password" })
+       // if (!isValidPassword(password.trim())) return res.status(400).send({ status: false, message: "Please provide valid password" })
 
         let isUserExist = await userModel.findOne({ email: email.trim(), password: password.trim() })
         if (!isUserExist) return res.status(404).send({ status: false, message: "user Not found" })
@@ -98,7 +99,7 @@ const userLogin = async (req, res) => {
         console.log(`Token Generated at:- ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
 
         res.setHeader("x-api-key", token);
-        res.status(200).send({ status: true, message: token })
+        res.status(200).send({ status: true, message: 'Success', data: token })
 
     }
     catch (error) { res.status(500).send({ status: false, error: error.message }) }
